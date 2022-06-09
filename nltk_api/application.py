@@ -96,8 +96,7 @@ def tokenizer():
     from nltk_api.tag.sentence import tag_sentences
     from nltk_api.tag.response import TaggerResponseBuilder
     remove_stops = request.args.get('remove_stops', None) is not None
-    symbols = request.args.get('symbols', None) is not None
-    result = tokenize_sentences(payload, remove_stops, symbols)
+    result = tokenize_sentences(payload, remove_stops)
     builder = TokenizeResponseBuilder(payload, result)
 
     return builder.build()
