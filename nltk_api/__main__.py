@@ -1,5 +1,5 @@
 import os
-from gevent.wsgi import WSGIServer
+from gevent.pywsgi import WSGIServer
 from nltk_api.application import app
 
 
