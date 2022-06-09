@@ -80,8 +80,9 @@ def tagger():
         return BadRequest("Incorrect format of entered data. Expects JSON array with strings.")
     from nltk_api.tag.sentence import tag_sentences
     from nltk_api.tag.response import TaggerResponseBuilder
+    remove_stops = request.args.get('remove_stops', None) is not None
     show_symbols = request.args.get('symbols', None) is not None
-    result = tag_sentences(payload, show_symbols)
+    result = tag_sentences(payload, remove_stops, show_symbols)
     builder = TaggerResponseBuilder(payload, result)
 
     return builder.build()
@@ -94,8 +95,9 @@ def tokenizer():
         return BadRequest("Incorrect format of entered data. Expects JSON array with strings.")
     from nltk_api.tag.sentence import tag_sentences
     from nltk_api.tag.response import TaggerResponseBuilder
-    show_symbols = request.args.get('symbols', None) is not None
-    result = tokenize_sentences(payload, show_symbols)
+    remove_stops = request.args.get('remove_stops', None) is not None
+    symbols = request.args.get('symbols', None) is not None
+    result = tokenize_sentences(payload, remove_stops, symbols)
     builder = TokenizeResponseBuilder(payload, result)
 
     return builder.build()

@@ -1,5 +1,6 @@
 from nltk import pos_tag_sents as tagger
 from nltk import word_tokenize as tokenizer
+from nltk.corpus import stopwords
 POS_TAGS = {
     '$': 'dollar',
     "''": 'quote_close',
@@ -50,14 +51,21 @@ POS_TAGS = {
 _IDX_WORD, _IDX_SYMBOL = 0, 1
 
 
-def tokenize_sentences(sentences, pos_symbol=False):
+def tokenize_sentences(sentences, remove_stops=False, symbols=False):
     tokenized = []
+    stop_words = set(stopwords.words('english'))
+
     for sent in sentences:
-        tokenized.append(tokenizer(sent))
+        if not remove_stops:
+           tokenized.append(tokenizer(sent))
+        else:
+           tokenized.append([w for w in tokenizer(sent) if not w.lower() in stop_words])
 
     processed_list = tagger(tokenized)
 
-    if not pos_symbol:
+    print(tokenized)
+
+    if not symbols:
         output_list = []
         for sentence in processed_list:
             new_sentence = []
