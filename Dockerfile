@@ -1,7 +1,7 @@
 FROM python:3.6.0-alpine
 LABEL version="2.0"
 LABEL description="Python 3 with NLTK and WordNet prepared."
-LABEL maintainer "Szymon Szymański szymon.szymanski@hotmail.com"
+LABEL maintainer "Dan Mincu danmincu@gmail.com - forked from szymon.szymanski@hotmail.com"
 
 RUN apk update && \
     apk add ca-certificates wget && \
@@ -17,7 +17,7 @@ RUN apk add --no-cache gcc g++ musl-dev linux-headers && \
     pip3 install --upgrade pip && \
     pip3 install --upgrade setuptools && \
     pip install -U nltk && \
-    python -W ignore -m nltk.downloader wordnet punkt averaged_perceptron_tagger stopwords && \
+    python -W ignore -m nltk.downloader wordnet punkt averaged_perceptron_tagger stopwords omw-1.4 && \
     pip install -r ./nltk_api/requirements.txt && \
     apk del linux-headers musl-dev gcc wget ca-certificates libstdc++ mpc1 mpfr3 pkgconfig pkgconf libgcc libgomp isl gmp binutils binutils-libs
 
