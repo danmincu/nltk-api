@@ -12,7 +12,6 @@ class TokenizeResponseBuilder(object):
         return {'sentence': word, 'words': pos}
 
     def _prepare_result_items(self, result_set):
-        print(result_set)
         for sentence_collection in result_set:
             sentence_processed = [self._create_item(sentence_collection[0], sentence_collection[1])]
             self._outputCollection.append(sentence_processed)
