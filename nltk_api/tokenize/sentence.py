@@ -10,7 +10,7 @@ def tokenize_sentences(sentences, remove_stops=False):
         sentences = sent_tokenize(sent)
         for prop in sentences:
             if remove_stops:
-                tokenized.append([prop, [w for w in word_tokenize(prop) if not w.lower() in stop_words]])
+                tokenized.append([prop, [w for w in word_tokenize(prop) if ((not w.lower() in stop_words) and w.isalpha())]])
             else:
                 tokenized.append([prop, word_tokenize(prop)])
     return tokenized

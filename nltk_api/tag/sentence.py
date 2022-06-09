@@ -56,12 +56,11 @@ def tag_sentences(sentences, remove_stops=False, pos_symbol=False):
     tokenized = []
 
     stop_words = set(stopwords.words('english'))
-
     for sent in sentences:
         if not remove_stops:
             tokenized.append(tokenizer(sent))
         else:
-            tokenized.append([w for w in tokenizer(sent) if not w.lower() in stop_words])
+            tokenized.append([w for w in tokenizer(sent) if ((not w.lower() in stop_words) and w.isalpha())])
     processed_list = tagger(tokenized)
 
     if not pos_symbol:
