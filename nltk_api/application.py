@@ -5,6 +5,8 @@ from nltk_api.lemma.processor import POS
 from werkzeug.exceptions import BadRequest
 
 from nltk_api.definition.processor import DefinitionProcessor
+from nltk_api.tokenize.response import TokenizeResponseBuilder
+from nltk_api.tokenize.sentence import tokenize_sentences
 from nltk_api.util.responses import BadRequestIncorrectPos
 from nltk_api.util.response_wrappers import json_response_with_time
 
@@ -81,6 +83,20 @@ def tagger():
     show_symbols = request.args.get('symbols', None) is not None
     result = tag_sentences(payload, show_symbols)
     builder = TaggerResponseBuilder(payload, result)
+
+    return builder.build()
+
+@app.route('/tokenizer', methods=['POST'])
+@json_response_with_time
+def tokenizer():
+    payload = request.get_json()
+    if not all(isinstance(entry, str) for entry in payload):
+        return BadRequest("Incorrect format of entered data. Expects JSON array with strings.")
+    from nltk_api.tag.sentence import tag_sentences
+    from nltk_api.tag.response import TaggerResponseBuilder
+    show_symbols = request.args.get('symbols', None) is not None
+    result = tokenize_sentences(payload, show_symbols)
+    builder = TokenizeResponseBuilder(payload, result)
 
     return builder.build()
 
