@@ -21,7 +21,7 @@ RUN apk add --no-cache gcc g++ musl-dev linux-headers && \
     pip install -r ./nltk_api/requirements.txt && \
     apk del linux-headers musl-dev gcc wget ca-certificates libstdc++ mpc1 mpfr3 pkgconfig pkgconf libgcc libgomp isl gmp binutils binutils-libs
 
-ENV APP_PORT 5001
+ENV APP_PORT 5000
 
 EXPOSE $APP_PORT
 
