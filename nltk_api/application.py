@@ -25,8 +25,10 @@ def definitions(word, pos=None):
     if pos is not None and pos not in POS:
         return BadRequestIncorrectPos()
 
+    use_similar = request.args.get('use_similar', None) is not None
+
     processor = DefinitionProcessor()
-    results = processor.look_up(word, pos, similar=False)
+    results = processor.look_up(word, pos, use_similar)
     builder = DefinitionResponseBuilder(word, results, pos)
 
     return builder.build()
