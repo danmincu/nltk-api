@@ -41,8 +41,9 @@ def similar(word, pos=None):
     if pos is not None and pos not in POS:
         return BadRequestIncorrectPos()
 
+    exclusive = request.args.get('exclusive', None) is not None
     processor = DefinitionProcessor()
-    results = processor.look_up(word, pos, similar=True)
+    results = processor.uber_look_up(word, pos, exclusive)
     builder = DefinitionResponseBuilder(word, results, pos)
 
     return builder.build()
