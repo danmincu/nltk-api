@@ -48,6 +48,33 @@ def similar(word, pos=None):
 
     return builder.build()
 
+@app.route('/hypernym/<string:word>')
+@app.route('/hypernym/<string:word>/<string:pos>')
+@json_response_with_time
+def hypenym(word, pos=None):
+    if pos is not None and pos not in POS:
+        return BadRequestIncorrectPos()
+
+    exclusive = request.args.get('exclusive', None) is not None
+    processor = DefinitionProcessor()
+    results = processor.hypernym_look_up(word, pos, exclusive)
+    builder = DefinitionResponseBuilder(word, results, pos)
+
+    return builder.build()
+
+@app.route('/hyponym/<string:word>')
+@app.route('/hyponym/<string:word>/<string:pos>')
+@json_response_with_time
+def hyponym(word, pos=None):
+    if pos is not None and pos not in POS:
+        return BadRequestIncorrectPos()
+
+    exclusive = request.args.get('exclusive', None) is not None
+    processor = DefinitionProcessor()
+    results = processor.hyponym_look_up(word, pos, exclusive)
+    builder = DefinitionResponseBuilder(word, results, pos)
+
+    return builder.build()
 
 @app.route('/lemma', methods=['POST'])
 @json_response_with_time
