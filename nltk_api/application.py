@@ -87,6 +87,19 @@ def topicdomains(word, pos=None):
 
     return builder.build()
 
+@app.route('/usagedomains/<string:word>')
+@app.route('/usagedomains/<string:word>/<string:pos>')
+@json_response_with_time
+def usagedomains(word, pos=None):
+    if pos is not None and pos not in POS:
+        return BadRequestIncorrectPos()
+
+    processor = DefinitionProcessor()
+    results = processor.usagedomains_look_up(word, pos)
+    builder = DefinitionResponseBuilder(word, results, pos)
+
+    return builder.build()
+
 @app.route('/lemma', methods=['POST'])
 @json_response_with_time
 def lemmas():
