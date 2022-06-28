@@ -51,7 +51,7 @@ class DefinitionProcessor(object):
 
         return output
 
-    def hypernym_look_up(self, word, pos=None, exclusive=True):
+    def hypernym_look_up(self, word, pos=None):
         if pos not in POS and pos is not None:
             raise ValueError('Passed pos is not recognized.')
 
@@ -69,12 +69,9 @@ class DefinitionProcessor(object):
                     if processed_word.is_part_of_speech(pos):
                         output.append(self._prepare_entry(synset.definition(), processed_word))
 
-        if exclusive:
-            output = list(filter(lambda item: item['word'].raw_word() != word, output))
-
         return output
 
-    def hyponym_look_up(self, word, pos=None, exclusive=True):
+    def hyponym_look_up(self, word, pos=None):
         if pos not in POS and pos is not None:
             raise ValueError('Passed pos is not recognized.')
 
@@ -92,9 +89,6 @@ class DefinitionProcessor(object):
                     processed_word = ProcessedWord(hyponym.name())
                     if processed_word.is_part_of_speech(pos):
                         output.append(self._prepare_entry(synset.definition(), processed_word))
-
-        if exclusive:
-            output = list(filter(lambda item: item['word'].raw_word() != word, output))
 
         return output
 

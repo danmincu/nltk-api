@@ -55,9 +55,8 @@ def hypenym(word, pos=None):
     if pos is not None and pos not in POS:
         return BadRequestIncorrectPos()
 
-    exclusive = request.args.get('exclusive', None) is not None
     processor = DefinitionProcessor()
-    results = processor.hypernym_look_up(word, pos, exclusive)
+    results = processor.hypernym_look_up(word, pos)
     builder = DefinitionResponseBuilder(word, results, pos)
 
     return builder.build()
@@ -69,9 +68,8 @@ def hyponym(word, pos=None):
     if pos is not None and pos not in POS:
         return BadRequestIncorrectPos()
 
-    exclusive = request.args.get('exclusive', None) is not None
     processor = DefinitionProcessor()
-    results = processor.hyponym_look_up(word, pos, exclusive)
+    results = processor.hyponym_look_up(word, pos)
     builder = DefinitionResponseBuilder(word, results, pos)
 
     return builder.build()
