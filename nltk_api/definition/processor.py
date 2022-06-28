@@ -92,6 +92,27 @@ class DefinitionProcessor(object):
 
         return output
 
+    def topicdomains_look_up(self, word, pos=None):
+        if pos not in POS and pos is not None:
+            raise ValueError('Passed pos is not recognized.')
+
+        synsets = wordnet.synsets(word, POS.get(pos))
+
+        output = []
+        if pos is None:
+            for synset in synsets:
+                for hyponym in synset.topic_domains():
+                    print(synset.pos(), hyponym)
+                    output.append(self._prepare_entry(synset.definition(), ProcessedWord(hyponym.name())))
+        else:
+            for synset in synsets:
+                for hyponym in synset.topic_domains():
+                    processed_word = ProcessedWord(hyponym.name())
+                    if processed_word.is_part_of_speech(pos):
+                        output.append(self._prepare_entry(synset.definition(), processed_word))
+
+        return output
+
 
     def _prepare_entry(self, definition, processed_word):
         return {'definition': definition, 'word': processed_word}

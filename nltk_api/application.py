@@ -74,6 +74,19 @@ def hyponym(word, pos=None):
 
     return builder.build()
 
+@app.route('/topicdomains/<string:word>')
+@app.route('/topicdomains/<string:word>/<string:pos>')
+@json_response_with_time
+def topicdomains(word, pos=None):
+    if pos is not None and pos not in POS:
+        return BadRequestIncorrectPos()
+
+    processor = DefinitionProcessor()
+    results = processor.topicdomains_look_up(word, pos)
+    builder = DefinitionResponseBuilder(word, results, pos)
+
+    return builder.build()
+
 @app.route('/lemma', methods=['POST'])
 @json_response_with_time
 def lemmas():
