@@ -83,6 +83,16 @@ def troponym(word):
 
     return builder.build()
 
+@app.route('/entailment/<string:word>')
+@json_response_with_time
+def entailment(word):
+    processor = DefinitionProcessor()
+    results = processor.entailment_look_up(word, 'verb')
+    builder = DefinitionResponseBuilder(word, results, 'verb')
+
+    return builder.build()
+
+
 @app.route('/meronym/<string:word>')
 @app.route('/meronym/<string:word>/<string:pos>')
 @json_response_with_time
