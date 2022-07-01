@@ -81,14 +81,66 @@ class DefinitionProcessor(object):
         if pos is None:
             for synset in synsets:
                 for hyponym in synset.hyponyms():
-                    output.append(self._prepare_entry(synset.definition(), ProcessedWord(hyponym.name())))
+                    output.append(self._prepare_entry_f(synset.definition(), ProcessedWord(hyponym.name()), 'hyponym'))
         else:
             for synset in synsets:
                 for hyponym in synset.hyponyms():
                     processed_word = ProcessedWord(hyponym.name())
                     if processed_word.is_part_of_speech(pos):
-                        output.append(self._prepare_entry(synset.definition(), processed_word))
+                        output.append(self._prepare_entry_f(synset.definition(), processed_word, 'hyponym'))
+        return output
 
+    def meronym_look_up(self, word, pos=None):
+        if pos not in POS and pos is not None:
+            raise ValueError('Passed pos is not recognized.')
+
+        synsets = wordnet.synsets(word, POS.get(pos))
+
+        output = []
+        if pos is None:
+            for synset in synsets:
+                for meronym in synset.part_meronyms():
+                    output.append(self._prepare_entry_f(synset.definition(), ProcessedWord(meronym.name()), 'part_meronym'))
+                for meronym in synset.substance_meronyms():
+                    output.append(self._prepare_entry_f(synset.definition(), ProcessedWord(meronym.name()), 'substance_meronym'))
+
+        else:
+            for synset in synsets:
+                for meronym in synset.part_meronyms():
+                    processed_word = ProcessedWord(meronym.name())
+                    if processed_word.is_part_of_speech(pos):
+                        output.append(self._prepare_entry_f(synset.definition(), processed_word, 'part_meronym'))
+                for meronym in synset.substance_meronyms():
+                    processed_word = ProcessedWord(meronym.name())
+                    if processed_word.is_part_of_speech(pos):
+                        output.append(self._prepare_entry_f(synset.definition(), processed_word, 'substance_meronym'))
+        return output
+
+
+    def holonym_look_up(self, word, pos=None):
+        if pos not in POS and pos is not None:
+            raise ValueError('Passed pos is not recognized.')
+
+        synsets = wordnet.synsets(word, POS.get(pos))
+
+        output = []
+        if pos is None:
+            for synset in synsets:
+                for holonym in synset.part_holonyms():
+                    output.append(self._prepare_entry_f(synset.definition(), ProcessedWord(holonym.name()), 'part_holonym'))
+                for holonym in synset.substance_holonyms():
+                    output.append(self._prepare_entry_f(synset.definition(), ProcessedWord(holonym.name()), 'substance_holonym'))
+
+        else:
+            for synset in synsets:
+                for holonym in synset.part_holonyms():
+                    processed_word = ProcessedWord(holonym.name())
+                    if processed_word.is_part_of_speech(pos):
+                        output.append(self._prepare_entry_f(synset.definition(), processed_word, 'part_holohym'))
+                for holonym in synset.substance_holonyms():
+                    processed_word = ProcessedWord(holonym.name())
+                    if processed_word.is_part_of_speech(pos):
+                        output.append(self._prepare_entry_f(synset.definition(), processed_word, 'substance_holonym'))
         return output
 
     def topicdomains_look_up(self, word, pos=None):
@@ -134,3 +186,6 @@ class DefinitionProcessor(object):
 
     def _prepare_entry(self, definition, processed_word):
         return {'definition': definition, 'word': processed_word}
+
+    def _prepare_entry_f(self, definition, processed_word, function):
+        return {'definition': definition, 'word': processed_word, 'function': function}

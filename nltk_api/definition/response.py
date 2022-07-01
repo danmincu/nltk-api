@@ -3,7 +3,8 @@ class DefinitionResponseBuilder(object):
         mapped_collection = list(map(lambda el: {
             'definition': el['definition'].capitalize(),
             'word': el['word'].word(),
-            'partOfSpeech': el['word'].part_of_speech()
+            'partOfSpeech': el['word'].part_of_speech(),
+            'function': el['function'] if 'function' in el else 'None'
         }, result_set))
 
         self._output = {

@@ -74,6 +74,33 @@ def hyponym(word, pos=None):
 
     return builder.build()
 
+@app.route('/meronym/<string:word>')
+@app.route('/meronym/<string:word>/<string:pos>')
+@json_response_with_time
+def meronym(word, pos=None):
+    if pos is not None and pos not in POS:
+        return BadRequestIncorrectPos()
+
+    processor = DefinitionProcessor()
+    results = processor.meronym_look_up(word, pos)
+    builder = DefinitionResponseBuilder(word, results, pos)
+
+    return builder.build()
+
+@app.route('/holonym/<string:word>')
+@app.route('/holonym/<string:word>/<string:pos>')
+@json_response_with_time
+def holonym(word, pos=None):
+    if pos is not None and pos not in POS:
+        return BadRequestIncorrectPos()
+
+    processor = DefinitionProcessor()
+    results = processor.holonym_look_up(word, pos)
+    builder = DefinitionResponseBuilder(word, results, pos)
+
+    return builder.build()
+
+
 @app.route('/topicdomains/<string:word>')
 @app.route('/topicdomains/<string:word>/<string:pos>')
 @json_response_with_time
