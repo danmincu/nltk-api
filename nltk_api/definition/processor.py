@@ -104,6 +104,15 @@ class DefinitionProcessor(object):
                     output.append(self._prepare_entry_f(synset.definition(), processed_word, 'entailment'))
         return output
 
+    def attribute_look_up(self, word):
+        synsets = wordnet.synsets(word, POS.get(None))
+
+        output = []
+        for synset in synsets:
+            for entailment in synset.attributes():
+                processed_word = ProcessedWord(entailment.name())
+                output.append(self._prepare_entry_f(synset.definition(), processed_word, 'attribute'))
+        return output
 
     def troponym_look_up(self, word, pos=None):
         if pos not in POS and pos is not None:

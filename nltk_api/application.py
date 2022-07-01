@@ -92,6 +92,14 @@ def entailment(word):
 
     return builder.build()
 
+@app.route('/attribute/<string:word>')
+@json_response_with_time
+def atttribute(word):
+    processor = DefinitionProcessor()
+    results = processor.attribute_look_up(word)
+    builder = DefinitionResponseBuilder(word, results, None)
+
+    return builder.build()
 
 @app.route('/meronym/<string:word>')
 @app.route('/meronym/<string:word>/<string:pos>')
