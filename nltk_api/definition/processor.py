@@ -90,6 +90,20 @@ class DefinitionProcessor(object):
                         output.append(self._prepare_entry_f(synset.definition(), processed_word, 'hyponym'))
         return output
 
+    def troponym_look_up(self, word, pos=None):
+        if pos not in POS and pos is not None:
+            raise ValueError('Passed pos is not recognized.')
+
+        synsets = wordnet.synsets(word, POS.get(pos))
+
+        output = []
+        for synset in synsets:
+            for hyponym in synset.hyponyms():
+                processed_word = ProcessedWord(hyponym.name())
+                if processed_word.is_part_of_speech('verb'):
+                    output.append(self._prepare_entry_f(synset.definition(), processed_word, 'troponym'))
+        return output
+
     def meronym_look_up(self, word, pos=None):
         if pos not in POS and pos is not None:
             raise ValueError('Passed pos is not recognized.')

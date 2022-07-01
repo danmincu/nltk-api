@@ -74,6 +74,15 @@ def hyponym(word, pos=None):
 
     return builder.build()
 
+@app.route('/troponym/<string:word>')
+@json_response_with_time
+def troponym(word):
+    processor = DefinitionProcessor()
+    results = processor.troponym_look_up(word, 'verb')
+    builder = DefinitionResponseBuilder(word, results, 'verb')
+
+    return builder.build()
+
 @app.route('/meronym/<string:word>')
 @app.route('/meronym/<string:word>/<string:pos>')
 @json_response_with_time
