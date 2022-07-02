@@ -118,6 +118,20 @@ class DefinitionProcessor(object):
                     output.append(self._prepare_entry_f(synset.definition(), processed_word, 'verbgroup'))
         return output
 
+    def entailment_look_up(self, word, pos=None):
+        if pos not in POS and pos is not None:
+            raise ValueError('Passed pos is not recognized.')
+
+        synsets = wordnet.synsets(word, POS.get(pos))
+
+        output = []
+        for synset in synsets:
+            for entailment in synset.entailments():
+                processed_word = ProcessedWord(entailment.name())
+                if processed_word.is_part_of_speech('verb'):
+                    output.append(self._prepare_entry_f(synset.definition(), processed_word, 'entailment'))
+        return output
+
     def attribute_look_up(self, word):
         synsets = wordnet.synsets(word, POS.get(None))
 
