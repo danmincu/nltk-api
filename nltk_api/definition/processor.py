@@ -254,4 +254,7 @@ class DefinitionProcessor(object):
         return {'definition': definition, 'word': processed_word}
 
     def _prepare_entry_f(self, definition, processed_word, function):
-        return {'definition': definition, 'word': processed_word, 'function': function}
+        if function is None:
+            return {'definition': definition, 'word': processed_word}
+        else:
+            return {'definition': definition, 'word': processed_word, 'function': function}

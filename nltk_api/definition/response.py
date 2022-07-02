@@ -4,7 +4,11 @@ class DefinitionResponseBuilder(object):
             'definition': el['definition'].capitalize(),
             'word': el['word'].word(),
             'partOfSpeech': el['word'].part_of_speech(),
-            'function': el['function'] if 'function' in el else 'None'
+            'function': el['function']
+        } if 'function' in el else {
+            'definition': el['definition'].capitalize(),
+            'word': el['word'].word(),
+            'partOfSpeech': el['word'].part_of_speech()
         }, result_set))
 
         self._output = {
