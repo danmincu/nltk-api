@@ -5,8 +5,8 @@ from nltk_api.lemma.processor import POS
 from werkzeug.exceptions import BadRequest
 
 from nltk_api.definition.processor import DefinitionProcessor
-from nltk_api.tokenize.response import TokenizeResponseBuilder
-from nltk_api.tokenize.sentence import tokenize_sentences
+from nltk_api.tokenizer.response import TokenizeResponseBuilder
+from nltk_api.tokenizer.sentence import tokenize_sentences
 from nltk_api.util.responses import BadRequestIncorrectPos
 from nltk_api.util.response_wrappers import json_response_with_time
 
