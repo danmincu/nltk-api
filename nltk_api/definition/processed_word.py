@@ -8,12 +8,11 @@ REVERSE_POS = {
     ADJ: 'adjective',
     ADJ_SAT: 'adjective',
     ADV: 'adverb',
-
 }
 
 
 class ProcessedWord(object):
-    def __init__(self, sysnet_word):
+    def __init__(self, sysnet_word, sysnet=None):
         if not isinstance(sysnet_word, str):
             raise TypeError('Constructor expects string argument.')
 
@@ -29,6 +28,7 @@ class ProcessedWord(object):
         self._normalized_word = self._word_raw.replace("_", " ")
         self._pos = REVERSE_POS.get(self._pos_raw)
         self._original_word = sysnet_word
+        self._sysnet = sysnet
 
     def raw_word(self):
         return self._word_raw
@@ -38,7 +38,10 @@ class ProcessedWord(object):
         Return human readable representation of the word
         :return:
         """
-        return self._normalized_word
+        if self._sysnet:
+            return {"word": self._normalized_word, "rawname": self._original_word, "definition": self._sysnet.definition()}
+        else:
+            return {"word": self._normalized_word, "rawname": self._original_word}
 
     def part_of_speech(self):
         return self._pos
