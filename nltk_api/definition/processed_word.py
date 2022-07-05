@@ -39,7 +39,13 @@ class ProcessedWord(object):
         :return:
         """
         if self._sysnet:
-            return {"word": self._normalized_word, "rawname": self._original_word, "definition": self._sysnet.definition()}
+            lem = self._sysnet.lemmas()[0]
+            print(lem)
+            return {"word": self._normalized_word,
+                    "rawname": self._original_word,
+                    "definition": self._sysnet.definition(),
+                    "examples": self._sysnet.examples(),
+                    "lemmas": list(map(lambda item: {'lemma': item.name().replace('_', ' '), 'frame_strings': item.frame_strings()}, self._sysnet.lemmas()))}
         else:
             return {"word": self._normalized_word, "rawname": self._original_word}
 
