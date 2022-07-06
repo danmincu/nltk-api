@@ -45,9 +45,25 @@ class ProcessedWord(object):
                     "rawname": self._original_word,
                     "definition": self._sysnet.definition(),
                     "examples": self._sysnet.examples(),
+                    "hyponyms": list(map(lambda item: {'hyponym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.hyponyms())),
+                    "hypernyms": list(map(lambda item: {'hypernym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.hypernyms())),
+                    "part_holonyms": list(map(lambda item: {'holonym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.part_holonyms())),
+                    "substance_holonyms": list(map(lambda item: {'holonym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.substance_holonyms())),
+                    "part_meronyms": list(map(lambda item: {'meronym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.part_meronyms())),
+                    "substance_meronyms": list(map(lambda item: {'meronym': self.normalized_word(item.name()), 'raw': item.name(), 'definition': item.definition()}, self._sysnet.substance_meronyms())),
+                    "topic_domains": list(map(lambda item: {'domains': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.topic_domains())),
+                    "usage_domains": list(map(lambda item: {'domains': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.usage_domains())),
+                    "verb_groups": list(map(lambda item: {'verbgroup': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.verb_groups())),
+                    "entailments": list(map(lambda item: {'entailment': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.entailments())),
                     "lemmas": list(map(lambda item: {'lemma': item.name().replace('_', ' '), 'frame_strings': item.frame_strings()}, self._sysnet.lemmas()))}
         else:
             return {"word": self._normalized_word, "rawname": self._original_word}
+
+    def normalized_word(self, synset_word):
+        tokens = synset_word.split('.')
+        if not len(tokens) == 3:
+            raise ValueError('The word should contain two dots separating meta information <lemma>.<pos>.<number>')
+        return tokens[IDX_WORD].replace("_", " ")
 
     def part_of_speech(self):
         return self._pos
