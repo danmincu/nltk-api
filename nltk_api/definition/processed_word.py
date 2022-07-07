@@ -55,6 +55,7 @@ class ProcessedWord(object):
                     "usage_domains": list(map(lambda item: {'domains': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.usage_domains())),
                     "verb_groups": list(map(lambda item: {'verbgroup': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.verb_groups())),
                     "entailments": list(map(lambda item: {'entailment': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.entailments())),
+                    "attributes": list(map(lambda item: {'attribute': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.attributes())),
                     "lemmas": list(map(lambda item: {'lemma': item.name().replace('_', ' '), 'frame_strings': item.frame_strings()}, self._sysnet.lemmas()))}
         else:
             return {"word": self._normalized_word, "rawname": self._original_word}
