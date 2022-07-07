@@ -1,17 +1,20 @@
 class DefinitionResponseBuilder(object):
-    def __init__(self, word, result_set, pos=None):
+    def __init__(self, word, result_set, pos=None, function=None):
         mapped_collection = list(map(lambda el: {
-            'definition': el['definition'].capitalize(),
-            'result': el['word'].word(),
-            'lexname': el['lexname'] if 'lexname' in el else None,
-            'rawname': el['rawname'],
-            'partOfSpeech': el['word'].part_of_speech(),
-            'function': el['function'] if 'function' in el else None
+            'input': {'definition': el['definition'].capitalize(),
+                'lexname': el['lexname'] if 'lexname' in el else None,
+                'synset_name': el['rawname'],
+                'clean_name': word,
+                'partOfSpeech': el['word'].part_of_speech(),
+                'lemmas': el['word'].lemma_names()},
+            'output': el['word'].word(),
+            'subfunction': el['subfunction'] if 'subfunction' in el else None
         }, result_set))
 
         self._output = {
-            'word': word.replace('_', ' '),
-            'results': mapped_collection,
+            'function_input': word.replace('_', ' '),
+            'input_variants': mapped_collection,
+            'function': function
         }
         if pos is not None:
             self._output['partOfSpeech'] = pos

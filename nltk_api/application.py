@@ -29,7 +29,7 @@ def definitions(word, pos=None):
 
     processor = DefinitionProcessor()
     results = processor.look_up(word, pos, use_similar)
-    builder = DefinitionResponseBuilder(word, results, pos)
+    builder = DefinitionResponseBuilder(word, results, pos, 'definitions')
 
     return builder.build()
 
@@ -43,21 +43,21 @@ def similar(word, pos=None):
 
     exclusive = request.args.get('exclusive', None) is not None
     processor = DefinitionProcessor()
-    results = processor.uber_look_up(word, pos, exclusive)
-    builder = DefinitionResponseBuilder(word, results, pos)
+    results = processor.similar_look_up(word, pos, exclusive)
+    builder = DefinitionResponseBuilder(word, results, pos, 'similar')
 
     return builder.build()
 
 @app.route('/hypernym/<string:word>')
 @app.route('/hypernym/<string:word>/<string:pos>')
 @json_response_with_time
-def hypenym(word, pos=None):
+def hypernym(word, pos=None):
     if pos is not None and pos not in POS:
         return BadRequestIncorrectPos()
 
     processor = DefinitionProcessor()
     results = processor.hypernym_look_up(word, pos)
-    builder = DefinitionResponseBuilder(word, results, pos)
+    builder = DefinitionResponseBuilder(word, results, pos, 'hypernym')
 
     return builder.build()
 
@@ -70,7 +70,7 @@ def hyponym(word, pos=None):
 
     processor = DefinitionProcessor()
     results = processor.hyponym_look_up(word, pos)
-    builder = DefinitionResponseBuilder(word, results, pos)
+    builder = DefinitionResponseBuilder(word, results, pos, 'hyponym')
 
     return builder.build()
 
@@ -79,7 +79,7 @@ def hyponym(word, pos=None):
 def troponym(word):
     processor = DefinitionProcessor()
     results = processor.troponym_look_up(word, 'verb')
-    builder = DefinitionResponseBuilder(word, results, 'verb')
+    builder = DefinitionResponseBuilder(word, results, 'verb', 'troponym')
 
     return builder.build()
 
@@ -88,7 +88,7 @@ def troponym(word):
 def verbgroup(word):
     processor = DefinitionProcessor()
     results = processor.verbgroup_look_up(word, 'verb')
-    builder = DefinitionResponseBuilder(word, results, 'verb')
+    builder = DefinitionResponseBuilder(word, results, 'verb', 'verbgroup')
 
     return builder.build()
 
@@ -97,7 +97,7 @@ def verbgroup(word):
 def entailment(word):
     processor = DefinitionProcessor()
     results = processor.entailment_look_up(word, 'verb')
-    builder = DefinitionResponseBuilder(word, results, 'verb')
+    builder = DefinitionResponseBuilder(word, results, 'verb', 'entailment')
 
     return builder.build()
 
@@ -106,7 +106,7 @@ def entailment(word):
 def atttribute(word):
     processor = DefinitionProcessor()
     results = processor.attribute_look_up(word)
-    builder = DefinitionResponseBuilder(word, results, None)
+    builder = DefinitionResponseBuilder(word, results, None, 'atttribute')
 
     return builder.build()
 
@@ -119,7 +119,7 @@ def meronym(word, pos=None):
 
     processor = DefinitionProcessor()
     results = processor.meronym_look_up(word, pos)
-    builder = DefinitionResponseBuilder(word, results, pos)
+    builder = DefinitionResponseBuilder(word, results, pos, 'meronym')
 
     return builder.build()
 
@@ -132,7 +132,7 @@ def holonym(word, pos=None):
 
     processor = DefinitionProcessor()
     results = processor.holonym_look_up(word, pos)
-    builder = DefinitionResponseBuilder(word, results, pos)
+    builder = DefinitionResponseBuilder(word, results, pos, 'holonym')
 
     return builder.build()
 
@@ -146,7 +146,7 @@ def topicdomains(word, pos=None):
 
     processor = DefinitionProcessor()
     results = processor.topicdomains_look_up(word, pos)
-    builder = DefinitionResponseBuilder(word, results, pos)
+    builder = DefinitionResponseBuilder(word, results, pos, 'topicdomains')
 
     return builder.build()
 
@@ -159,7 +159,7 @@ def usagedomains(word, pos=None):
 
     processor = DefinitionProcessor()
     results = processor.usagedomains_look_up(word, pos)
-    builder = DefinitionResponseBuilder(word, results, pos)
+    builder = DefinitionResponseBuilder(word, results, pos, 'usagedomains')
 
     return builder.build()
 

@@ -16,19 +16,19 @@ class DefinitionProcessor(object):
         output = []
         if pos is None:
             for synset in synsets:
-                output.append(self._prepare_synset_entry(synset, ProcessedWord(synset.name(), synset), "definition"))
+                output.append(self._prepare_synset_entry(synset, ProcessedWord(synset.name(), synset, synset)))
         else:
             for synset in synsets:
-                processed_word = ProcessedWord(synset.name(), synset)
+                processed_word = ProcessedWord(synset.name(), synset, synset)
                 if processed_word.is_part_of_speech(pos):
-                    output.append(self._prepare_synset_entry(synset, processed_word, "definition"))
+                    output.append(self._prepare_synset_entry(synset, processed_word))
 
         if not similar:
             output = list(filter(lambda item: item['word'].raw_word() == word, output))
 
         return output
 
-    def uber_look_up(self, word, pos=None, exclusive=True):
+    def similar_look_up(self, word, pos=None, exclusive=True):
         if pos not in POS and pos is not None:
             raise ValueError('Passed pos is not recognized.')
 
@@ -38,11 +38,11 @@ class DefinitionProcessor(object):
         if pos is None:
             for synset in synsets:
                 for lemma in synset.lemmas():
-                    output.append(self._prepare_synset_entry(synset, ProcessedWord(lemma.name()+f".{synset.pos()}.01")))
+                    output.append(self._prepare_synset_entry(synset, ProcessedWord(lemma.name()+f".{synset.pos()}.01", None, synset)))
         else:
             for synset in synsets:
                 for lemma in synset.lemmas():
-                    processed_word = ProcessedWord(lemma.name()+f".{synset.pos()}.01")
+                    processed_word = ProcessedWord(lemma.name()+f".{synset.pos()}.01", None, synset)
                     if processed_word.is_part_of_speech(pos):
                         output.append(self._prepare_synset_entry(synset, processed_word))
 
@@ -61,13 +61,13 @@ class DefinitionProcessor(object):
         if pos is None:
             for synset in synsets:
                 for hypernym in synset.hypernyms():
-                    output.append(self._prepare_synset_entry(synset, ProcessedWord(hypernym.name(), hypernym), "hypernym"))
+                    output.append(self._prepare_synset_entry(synset, ProcessedWord(hypernym.name(), hypernym, synset)))
         else:
             for synset in synsets:
                 for hypernym in synset.hypernyms():
                     processed_word = ProcessedWord(hypernym.name(), hypernym)
                     if processed_word.is_part_of_speech(pos):
-                        output.append(self._prepare_synset_entry(synset, processed_word, "hypernym"))
+                        output.append(self._prepare_synset_entry(synset, processed_word))
 
         return output
 
@@ -81,13 +81,13 @@ class DefinitionProcessor(object):
         if pos is None:
             for synset in synsets:
                 for hyponym in synset.hyponyms():
-                    output.append(self._prepare_synset_entry(synset, ProcessedWord(hyponym.name(), hyponym), 'hyponym'))
+                    output.append(self._prepare_synset_entry(synset, ProcessedWord(hyponym.name(), hyponym, synset)))
         else:
             for synset in synsets:
                 for hyponym in synset.hyponyms():
                     processed_word = ProcessedWord(hyponym.name(), hyponym)
                     if processed_word.is_part_of_speech(pos):
-                        output.append(self._prepare_synset_entry(synset, processed_word, 'hyponym'))
+                        output.append(self._prepare_synset_entry(synset, processed_word))
         return output
 
     def entailment_look_up(self, word, pos=None):
@@ -99,9 +99,9 @@ class DefinitionProcessor(object):
         output = []
         for synset in synsets:
             for entailment in synset.entailments():
-                processed_word = ProcessedWord(entailment.name(), entailment)
+                processed_word = ProcessedWord(entailment.name(), entailment, synset)
                 if processed_word.is_part_of_speech('verb'):
-                    output.append(self._prepare_synset_entry(synset, processed_word, 'entailment'))
+                    output.append(self._prepare_synset_entry(synset, processed_word))
         return output
 
     def verbgroup_look_up(self, word, pos=None):
@@ -113,9 +113,9 @@ class DefinitionProcessor(object):
         output = []
         for synset in synsets:
             for verbgroup in synset.verb_groups():
-                processed_word = ProcessedWord(verbgroup.name(), verbgroup)
+                processed_word = ProcessedWord(verbgroup.name(), verbgroup, synset)
                 if processed_word.is_part_of_speech('verb'):
-                    output.append(self._prepare_synset_entry(synset, processed_word, 'verbgroup'))
+                    output.append(self._prepare_synset_entry(synset, processed_word))
         return output
 
     def attribute_look_up(self, word):
@@ -124,8 +124,8 @@ class DefinitionProcessor(object):
         output = []
         for synset in synsets:
             for attribute in synset.attributes():
-                processed_word = ProcessedWord(attribute.name(), attribute)
-                output.append(self._prepare_synset_entry(synset, processed_word, 'attribute'))
+                processed_word = ProcessedWord(attribute.name(), attribute, synset)
+                output.append(self._prepare_synset_entry(synset, processed_word))
         return output
 
     def troponym_look_up(self, word, pos=None):
@@ -137,9 +137,9 @@ class DefinitionProcessor(object):
         output = []
         for synset in synsets:
             for troponym in synset.hyponyms():
-                processed_word = ProcessedWord(troponym.name(), troponym)
+                processed_word = ProcessedWord(troponym.name(), troponym, synset)
                 if processed_word.is_part_of_speech('verb'):
-                    output.append(self._prepare_synset_entry(synset, processed_word, 'troponym'))
+                    output.append(self._prepare_synset_entry(synset, processed_word))
         return output
 
     def meronym_look_up(self, word, pos=None):
@@ -152,18 +152,18 @@ class DefinitionProcessor(object):
         if pos is None:
             for synset in synsets:
                 for meronym in synset.part_meronyms():
-                    output.append(self._prepare_synset_entry(synset, ProcessedWord(meronym.name(), meronym), 'part_meronym'))
+                    output.append(self._prepare_synset_entry(synset, ProcessedWord(meronym.name(), meronym, synset), 'part_meronym'))
                 for meronym in synset.substance_meronyms():
-                    output.append(self._prepare_synset_entry(synset, ProcessedWord(meronym.name(), meronym), 'substance_meronym'))
+                    output.append(self._prepare_synset_entry(synset, ProcessedWord(meronym.name(), meronym, synset), 'substance_meronym'))
 
         else:
             for synset in synsets:
                 for meronym in synset.part_meronyms():
-                    processed_word = ProcessedWord(meronym.name(), meronym)
+                    processed_word = ProcessedWord(meronym.name(), meronym, synset)
                     if processed_word.is_part_of_speech(pos):
                         output.append(self._prepare_synset_entry(synset, processed_word, 'part_meronym'))
                 for meronym in synset.substance_meronyms():
-                    processed_word = ProcessedWord(meronym.name(), meronym)
+                    processed_word = ProcessedWord(meronym.name(), meronym, synset)
                     if processed_word.is_part_of_speech(pos):
                         output.append(self._prepare_synset_entry(synset, processed_word, 'substance_meronym'))
         return output
@@ -179,18 +179,18 @@ class DefinitionProcessor(object):
         if pos is None:
             for synset in synsets:
                 for holonym in synset.part_holonyms():
-                    output.append(self._prepare_synset_entry(synset, ProcessedWord(holonym.name(), holonym), 'part_holonym'))
+                    output.append(self._prepare_synset_entry(synset, ProcessedWord(holonym.name(), holonym, synset), 'part_holonym'))
                 for holonym in synset.substance_holonyms():
-                    output.append(self._prepare_synset_entry(synset, ProcessedWord(holonym.name(), holonym), 'substance_holonym'))
+                    output.append(self._prepare_synset_entry(synset, ProcessedWord(holonym.name(), holonym, synset), 'substance_holonym'))
 
         else:
             for synset in synsets:
                 for holonym in synset.part_holonyms():
-                    processed_word = ProcessedWord(holonym.name(), holonym)
+                    processed_word = ProcessedWord(holonym.name(), holonym, synset)
                     if processed_word.is_part_of_speech(pos):
                         output.append(self._prepare_synset_entry(synset, processed_word, 'part_holohym'))
                 for holonym in synset.substance_holonyms():
-                    processed_word = ProcessedWord(holonym.name(), holonym)
+                    processed_word = ProcessedWord(holonym.name(), holonym, synset)
                     if processed_word.is_part_of_speech(pos):
                         output.append(self._prepare_synset_entry(synset, processed_word, 'substance_holonym'))
         return output
@@ -206,13 +206,13 @@ class DefinitionProcessor(object):
         if pos is None:
             for synset in synsets:
                 for topicd in synset.topic_domains():
-                    output.append(self._prepare_synset_entry(synset, ProcessedWord(topicd.name(), topicd), "topic domains"))
+                    output.append(self._prepare_synset_entry(synset, ProcessedWord(topicd.name(), topicd, synset)))
         else:
             for synset in synsets:
                 for topicd in synset.topic_domains():
-                    processed_word = ProcessedWord(topicd.name(), topicd)
+                    processed_word = ProcessedWord(topicd.name(), topicd, synset)
                     if processed_word.is_part_of_speech(pos):
-                        output.append(self._prepare_synset_entry(synset, processed_word, "topic domains"))
+                        output.append(self._prepare_synset_entry(synset, processed_word))
 
         return output
 
@@ -226,13 +226,13 @@ class DefinitionProcessor(object):
         if pos is None:
             for synset in synsets:
                 for usaged in synset.usage_domains():
-                    output.append(self._prepare_synset_entry(synset, ProcessedWord(usaged.name(), usaged), "usage domains"))
+                    output.append(self._prepare_synset_entry(synset, ProcessedWord(usaged.name(), usaged, synset)))
         else:
             for synset in synsets:
                 for usaged in synset.usage_domains():
-                    processed_word = ProcessedWord(usaged.name(), usaged)
+                    processed_word = ProcessedWord(usaged.name(), usaged, synset)
                     if processed_word.is_part_of_speech(pos):
-                        output.append(self._prepare_synset_entry(synset, processed_word, "usage_domains"))
+                        output.append(self._prepare_synset_entry(synset, processed_word))
 
         return output
 
@@ -241,4 +241,4 @@ class DefinitionProcessor(object):
         if function is None:
             return {'definition': synset.definition(), 'lexname': synset.lexname(), 'rawname': synset.name(), 'word': processed_word}
         else:
-            return {'definition': synset.definition(), 'lexname': synset.lexname(), 'rawname': synset.name(), 'word': processed_word, 'function': function}
+            return {'definition': synset.definition(), 'lexname': synset.lexname(), 'rawname': synset.name(), 'word': processed_word, 'subfunction': function}

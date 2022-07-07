@@ -12,7 +12,7 @@ REVERSE_POS = {
 
 
 class ProcessedWord(object):
-    def __init__(self, sysnet_word, sysnet=None):
+    def __init__(self, sysnet_word, sysnet=None, original_synset=None):
         if not isinstance(sysnet_word, str):
             raise TypeError('Constructor expects string argument.')
 
@@ -28,6 +28,7 @@ class ProcessedWord(object):
         self._normalized_word = self._word_raw.replace("_", " ")
         self._pos = REVERSE_POS.get(self._pos_raw)
         self._original_word = sysnet_word
+        self._original_sysnet = original_synset
         self._sysnet = sysnet
 
     def raw_word(self):
@@ -41,24 +42,26 @@ class ProcessedWord(object):
         if self._sysnet:
             lem = self._sysnet.lemmas()[0]
             print(lem)
-            return {"word": self._normalized_word,
-                    "rawname": self._original_word,
+            return {"clean_name": self._normalized_word,
+                    "synset_name": self._original_word,
+                    "lexname": self._sysnet.lexname(),
                     "definition": self._sysnet.definition(),
-                    "examples": self._sysnet.examples(),
-                    "hyponyms": list(map(lambda item: {'hyponym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.hyponyms())),
-                    "hypernyms": list(map(lambda item: {'hypernym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.hypernyms())),
-                    "part_holonyms": list(map(lambda item: {'holonym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.part_holonyms())),
-                    "substance_holonyms": list(map(lambda item: {'holonym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.substance_holonyms())),
-                    "part_meronyms": list(map(lambda item: {'meronym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.part_meronyms())),
-                    "substance_meronyms": list(map(lambda item: {'meronym': self.normalized_word(item.name()), 'raw': item.name(), 'definition': item.definition()}, self._sysnet.substance_meronyms())),
-                    "topic_domains": list(map(lambda item: {'domains': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.topic_domains())),
-                    "usage_domains": list(map(lambda item: {'domains': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.usage_domains())),
-                    "verb_groups": list(map(lambda item: {'verbgroup': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.verb_groups())),
-                    "entailments": list(map(lambda item: {'entailment': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.entailments())),
-                    "attributes": list(map(lambda item: {'attribute': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.attributes())),
-                    "lemmas": list(map(lambda item: {'lemma': item.name().replace('_', ' '), 'frame_strings': item.frame_strings()}, self._sysnet.lemmas()))}
+                    "lemmas": list(map(lambda item: {'lemma': item.name().replace('_', ' '), 'frame_strings': item.frame_strings()}, self._sysnet.lemmas())),
+                    "synset_vectors": {
+                        "examples": self._sysnet.examples(),
+                        "hyponyms": list(map(lambda item: {'hyponym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.hyponyms())),
+                        "hypernyms": list(map(lambda item: {'hypernym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.hypernyms())),
+                        "part_holonyms": list(map(lambda item: {'holonym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.part_holonyms())),
+                        "substance_holonyms": list(map(lambda item: {'holonym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.substance_holonyms())),
+                        "part_meronyms": list(map(lambda item: {'meronym': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.part_meronyms())),
+                        "substance_meronyms": list(map(lambda item: {'meronym': self.normalized_word(item.name()), 'raw': item.name(), 'definition': item.definition()}, self._sysnet.substance_meronyms())),
+                        "topic_domains": list(map(lambda item: {'domains': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.topic_domains())),
+                        "usage_domains": list(map(lambda item: {'domains': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.usage_domains())),
+                        "verb_groups": list(map(lambda item: {'verbgroup': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.verb_groups())),
+                        "entailments": list(map(lambda item: {'entailment': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.entailments())),
+                        "attributes": list(map(lambda item: {'attribute': self.normalized_word(item.name()), 'raw': item.name(),'definition': item.definition()}, self._sysnet.attributes()))}}
         else:
-            return {"word": self._normalized_word, "rawname": self._original_word}
+            return {"clean_name": self._normalized_word, "rawname": self._original_word}
 
     def normalized_word(self, synset_word):
         tokens = synset_word.split('.')
@@ -68,6 +71,12 @@ class ProcessedWord(object):
 
     def part_of_speech(self):
         return self._pos
+
+    def lemma_names(self):
+        if self._original_sysnet:
+            return self._original_sysnet.lemma_names()
+        else:
+            return []
 
     def raw_part_of_speech(self):
         return self._pos_raw
