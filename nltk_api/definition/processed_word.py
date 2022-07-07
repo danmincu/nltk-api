@@ -72,7 +72,7 @@ class ProcessedWord(object):
 
     def lemma_names(self):
         if self._original_sysnet:
-            return self._original_sysnet.lemma_names()
+            return list(map(lambda item: item.replace('_', ' '), self._original_sysnet.lemma_names()))
         else:
             return []
 
