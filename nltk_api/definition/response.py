@@ -8,8 +8,11 @@ class DefinitionResponseBuilder(object):
                 'partOfSpeech': el['word'].part_of_speech(),
                 'lemmas': el['word'].lemma_names()},
             'output': el['word'].word(),
-            'subfunction': el['subfunction'] if 'subfunction' in el else None
+            'function_variant': el['subfunction'] if 'subfunction' in el else None
         }, result_set))
+
+        # remove the "subfunction":None entries
+        list(filter(lambda el: el.pop('function_variant'), list(filter(lambda el: el['function_variant'] == None, mapped_collection))))
 
         self._output = {
             'function_input': word.replace('_', ' '),
