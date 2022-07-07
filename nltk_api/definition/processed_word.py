@@ -40,8 +40,6 @@ class ProcessedWord(object):
         :return:
         """
         if self._sysnet:
-            lem = self._sysnet.lemmas()[0]
-            print(lem)
             return {"clean_name": self._normalized_word,
                     "synset_name": self._original_word,
                     "lexname": self._sysnet.lexname(),
