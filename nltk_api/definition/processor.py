@@ -1,11 +1,36 @@
 from nltk.corpus import wordnet
 from nltk_api.definition.processed_word import ProcessedWord
 from nltk_api.lemma.processor import POS
-
+from nltk.corpus import wordnet_ic as wnic
 
 class DefinitionProcessor(object):
     def __init__(self):
         pass
+
+    # higher score = more similar
+    def similarity(self, word1, word2, algorithm=None):
+
+        synset1 = wordnet.synset(word1)
+        synset2 = wordnet.synset(word2)
+        if algorithm is not None:
+            algorithm = algorithm.lower()
+        if algorithm == "wup":
+            return synset2.wup_similarity(synset1)
+        else:
+            if algorithm == "lch":
+                return synset2.lch_similarity(synset1)
+            else:
+                # this one is the exception >> lower score = more similar
+                if algorithm == "res":
+                    return synset2.res_similarity(synset1, wnic.ic('ic-bnc-resnik-add1.dat'))
+                else:
+                    if algorithm == "lin":
+                        return synset2.lin_similarity(synset1, wnic.ic('ic-bnc-add1.dat'))
+                    else:
+                        if algorithm == "jcn":
+                            return synset2.jcn_similarity(synset1, wnic.ic('ic-bnc-add1.dat'))
+                        else:
+                            return synset2.path_similarity(synset1)
 
     def look_up(self, word, pos=None, similar=True):
         if pos not in POS and pos is not None:

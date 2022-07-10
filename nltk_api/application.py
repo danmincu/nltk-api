@@ -33,6 +33,14 @@ def definitions(word, pos=None):
 
     return builder.build()
 
+@app.route('/similarity/<string:word1>/<string:word2>')
+@json_response_with_time
+def distance(word1, word2):
+    algorithm = request.args.get('algorithm', None)
+    processor = DefinitionProcessor()
+    distance = processor.similarity(word1, word2, algorithm)
+    return {"word1": word1, "word2": word2, "algorithm": algorithm, "distance": distance}
+
 
 @app.route('/similar/<string:word>')
 @app.route('/similar/<string:word>/<string:pos>')
