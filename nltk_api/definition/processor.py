@@ -8,6 +8,7 @@ class DefinitionProcessor(object):
         pass
 
     # higher score = more similar
+    # to-do: expand this https: // github.com / alvations / pywsd.git
     def similarity(self, word1, word2, algorithm=None):
 
         synset1 = wordnet.synset(word1)
